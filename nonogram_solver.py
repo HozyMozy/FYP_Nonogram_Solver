@@ -1,0 +1,126 @@
+import numpy as np
+
+R = 9
+C = 5
+
+
+def solvePic(grid, x, y):
+    if y == R:
+        print("\n")
+        for r in grid:
+            print(r)
+        return True
+    nextY = y
+    if x == C - 1:
+        nextX = 0
+        nextY = y + 1
+    else:
+        nextX = x + 1
+    grid[y][x] = 1
+    if is_Safe(grid, x, y) and solvePic(grid, nextX, nextY):
+        return True
+    grid[y][x] = 0
+    if is_Safe(grid, x, y) and solvePic(grid, nextX, nextY):
+        return True
+    return False
+
+
+def is_Safe(grid, x, y):
+    currentRow = rowToRestriction(grid, y)
+    currentCol = colToRestriction(grid, x)
+
+    rowRestrict = row_constraints[y]
+    colRestrict = col_constraints[x]
+    if currentCol > colRestrict:
+        return False
+    if currentRow > rowRestrict:
+        return False
+    if x == C - 1 and currentRow != rowRestrict:
+        return False
+    if y == R - 1 and currentCol != colRestrict:
+        return False
+    return True
+
+
+def rowToRestriction(grid, y):
+    currentRow = [0]
+    l = 0
+    for i in range(C):
+        if grid[y][i] != 0:
+            currentRow[l] = currentRow[l] + grid[y][i]
+        else:
+            currentRow.append(0)
+            l += 1
+    currentRow = [i for i in currentRow if i != 0]
+    return currentRow
+
+
+def colToRestriction(grid, x):
+    currentCol = [0]
+    l = 0
+    for i in range(R):
+        if grid[i][x] != 0:
+            currentCol[l] = currentCol[l] + grid[i][x]
+        else:
+            currentCol.append(0)
+            l += 1
+    currentCol = [i for i in currentCol if i != 0]
+    return currentCol
+
+
+grid = [[0 for x in range(C)] for y in range(R)]
+"""
+grid[2][1] = 1
+for x in grid:
+    print(x)
+grid[2][1] = 0
+"""
+"""
+row_constraints = [[3,6],
+                   [2,3,3],
+                   [1,2,3],
+                   [2,5,2],
+                   [1,2,2,2],
+                   [2,1,1,2],
+                   [1,1,1,2],
+                   [2,1,2,2],
+                   [2,1,2,1],
+                   [2,2,3,1],
+                   [2,4,2],
+                   [2],
+                   [3,1,1],
+                   [3,3,2],
+                   [6,3]
+                   ]
+col_constraints = [[3,6],
+                   [2,9],
+                   [1,3,2],
+                   [2,2],
+                   [2,4,1],
+                   [1,2,2,1],
+                   [2,1,1,1],
+                   [1,1,1,1],
+                   [1,1,2,1],
+                   [1,1,3,1],
+                   [1,8,1],
+                   [2,2,1,1],
+                   [2,1,1,1],
+                   [8,2],
+                   [6,3]]
+"""
+
+row_constraints = [[3],
+                   [1,1],
+                   [1,1],
+                   [1],
+                   [5],
+                   [2,2],
+                   [5],
+                   [5],
+                   [3]]
+col_constraints = [[2,4],
+                   [1,5],
+                   [1,1,3],
+                   [1,5],
+                   [7]]
+solution = solvePic(grid, 0, 0)
