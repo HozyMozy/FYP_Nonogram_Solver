@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./App.css";
 
 function App() {
   const [solvedGrid, setSolvedGrid] = useState([]);
-
-  const R = 9;
-  const C = 5;
+  const [gridSize, setGridSize] = useState({ R: 9, C: 5 }); // Initial grid size
 
   const handleSolveClick = () => {
-    axios.post("http://localhost:5000/solve", {
-        R,
-        C,
-      })
+    axios.post("http://localhost:5000/solve", gridSize)
       .then((response) => {
         const solvedGrid = response.data.solved_grid;
         setSolvedGrid(solvedGrid);
@@ -22,15 +18,20 @@ function App() {
       });
   };
 
+  // Function to dynamically calculate grid columns based on grid size
+  const calculateGridColumns = () => {
+    return `repeat(${gridSize.C}, 40px)`;
+  };
+
   return (
     <div>
       <h1>Nonogram Solver App</h1>
       <button onClick={handleSolveClick}>Solve</button>
-      <div>
+      <div className="grid-container" style={{ gridTemplateColumns: calculateGridColumns() }}>
         {solvedGrid.map((row, rowIndex) => (
-          <div key={rowIndex}>
+          <div key={rowIndex} className="grid-row">
             {row.map((cell, colIndex) => (
-              <span key={colIndex}>{cell === 1 ? "X" : "O"}</span>
+              <span key={colIndex} className={cell === 1 ? "grid-cell black-cell" : "grid-cell white-cell"}></span>
             ))}
           </div>
         ))}

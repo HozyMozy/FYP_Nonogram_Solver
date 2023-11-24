@@ -1,38 +1,35 @@
-.App {
+body {
+  background-color: dimgray;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(5, 40px); /* Adjust based on your grid size */
+  gap: 2px; /* Adjust the gap between cells */
+  border: 2px solid black; /* Add a border to the entire grid */
+  margin: auto; /* Center the grid horizontally */
+  max-width: fit-content;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.grid-row {
+  display: contents;
+  border-bottom: 1px solid black; /* Add a bottom border to each row */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.grid-cell {
+  width: 40px; /* Adjust based on your cell size */
+  height: 40px; /* Adjust based on your cell size */
+  border-right: 1px solid black; /* Add a right border to each cell */
 }
 
-.App-link {
-  color: #61dafb;
+/* Optional: Add a border to the last row and last cell to complete the grid */
+
+.black-cell {
+  background-color: black;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.white-cell {
+  background-color: white;
 }
