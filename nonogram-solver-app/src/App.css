@@ -6,25 +6,35 @@ body {
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(5, 40px); /* Adjust based on your grid size */
-  gap: 2px; /* Adjust the gap between cells */
-  border: 2px solid black; /* Add a border to the entire grid */
-  margin: auto; /* Center the grid horizontally */
+  grid-template-columns: repeat(5, 40px);
+  gap: 2px;
+  border: 2px solid black;
+  margin: auto;
   max-width: fit-content;
 }
 
 .grid-row {
   display: contents;
-  border-bottom: 1px solid black; /* Add a bottom border to each row */
+  border-bottom: 1px solid black;
+}
+
+.constraint-column {
+  display: flex;
+}
+
+.constraint-cell {
+  display: contents;
+  width: 40px;
+  height: 40px;
 }
 
 .grid-cell {
-  width: 40px; /* Adjust based on your cell size */
-  height: 40px; /* Adjust based on your cell size */
-  border-right: 1px solid black; /* Add a right border to each cell */
+  width: 40px;
+  height: 40px;
+  border-right: 1px solid black;
 }
 
-/* Optional: Add a border to the last row and last cell to complete the grid */
+
 
 .black-cell {
   background-color: black;
@@ -33,3 +43,4 @@ body {
 .white-cell {
   background-color: white;
 }
+

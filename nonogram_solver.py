@@ -8,12 +8,9 @@ CORS(app)
 
 global GRID
 
-R = 9
-C = 5
 
-
-def solvePuzzle(grid, x, y) -> list[list[int]]:
-    solved, solved_grid = solvePic(grid, 0, 0)
+def solvePuzzle(grid, x, y, R, C, row_con, col_con) -> list[list[int]]:
+    solved, solved_grid = solvePic(grid, 0, 0, R, C, row_con, col_con)
     print(solved_grid)
     if solved:
         return solved_grid
@@ -21,7 +18,7 @@ def solvePuzzle(grid, x, y) -> list[list[int]]:
         return []
 
 
-def solvePic(grid, x, y):
+def solvePic(grid, x, y, R, C, row_con, col_con):
     if y == R and is_Safe:
         return True, grid
     nextY = y
@@ -31,20 +28,20 @@ def solvePic(grid, x, y):
     else:
         nextX = x + 1
     grid[y][x] = 1
-    if is_Safe(grid, x, y) and solvePic(grid, nextX, nextY)[0]:
+    if is_Safe(grid, x, y, R, C, row_con, col_con) and solvePic(grid, nextX, nextY, R, C, row_con, col_con)[0]:
         return True, grid
     grid[y][x] = 0
-    if is_Safe(grid, x, y) and solvePic(grid, nextX, nextY)[0]:
+    if is_Safe(grid, x, y, R, C, row_con, col_con) and solvePic(grid, nextX, nextY, R, C, row_con, col_con)[0]:
         return True, grid
     return False, grid
 
 
-def is_Safe(grid, x, y):
-    currentRow = rowToRestriction(grid, y)
-    currentCol = colToRestriction(grid, x)
+def is_Safe(grid, x, y, R, C, row_con, col_con):
+    currentRow = rowToRestriction(grid, y, C)
+    currentCol = colToRestriction(grid, x, R)
 
-    rowRestrict = row_constraints[y]
-    colRestrict = col_constraints[x]
+    rowRestrict = row_con[y]
+    colRestrict = col_con[x]
     if currentCol > colRestrict:
         return False
     if currentRow > rowRestrict:
@@ -56,7 +53,7 @@ def is_Safe(grid, x, y):
     return True
 
 
-def rowToRestriction(grid, y):
+def rowToRestriction(grid, y, C):
     currentRow = [0]
     l = 0
     for i in range(C):
@@ -69,7 +66,7 @@ def rowToRestriction(grid, y):
     return currentRow
 
 
-def colToRestriction(grid, x):
+def colToRestriction(grid, x, R):
     currentCol = [0]
     l = 0
     for i in range(R):
@@ -82,8 +79,7 @@ def colToRestriction(grid, x):
     return currentCol
 
 
-grid = [[0 for x in range(C)] for y in range(R)]
-
+"""
 row_constraints = [[3],
                    [1, 1],
                    [1, 1],
@@ -99,6 +95,7 @@ col_constraints = [[2, 4],
                    [1, 5],
                    [7]]
 solution = solvePic(grid, 0, 0)
+"""
 
 
 @app.route("/solve", methods=["POST"])
@@ -106,9 +103,11 @@ def solve_nonogram():
     data = request.get_json()
     R = data.get("R")
     C = data.get("C")
+    row_constraints = data.get("row")
+    col_constraints = data.get("col")
     grid = [[0 for x in range(C)] for y in range(R)]
 
-    solved_grid = solvePuzzle(grid, 0, 0)
+    solved_grid = solvePuzzle(grid, 0, 0, R, C, row_constraints, col_constraints)
     print(solved_grid)
     return jsonify({"solved_grid": solved_grid})
 
