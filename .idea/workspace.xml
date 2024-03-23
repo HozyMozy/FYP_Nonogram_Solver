@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="37488321-2b6a-4863-b4ac-d2d34036a8b8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/PROJECT.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PROJECT.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nonogram-solver-app/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/nonogram-solver-app/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project Plan.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Project Plan.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constraints.txt" beforeDir="false" afterPath="$PROJECT_DIR$/constraints.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nonogram-solver-app/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/nonogram-solver-app/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nonogram_solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/nonogram_solver.py" afterDir="false" />
     </list>
@@ -58,33 +56,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/hozyf/Documents/Final Year Project/PROJECT/nonogram_solver.py",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\PyCharm 2023.2.3\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/hozyf/Documents/Final Year Project/PROJECT/nonogram_solver.py&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\PyCharm 2023.2.3\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\hozyf\Documents\Final Year Project\PROJECT\nonogram-solver-app\src\interactive-test" />
       <recent name="C:\Users\hozyf\Documents\Final Year Project\PROJECT\" />
     </key>
   </component>
-  <component name="RunManager" selected="Flask server.Flask (nonogram_solver.py)">
+  <component name="RunManager" selected="Flask server.PROJECT">
     <configuration name="PROJECT" type="PythonConfigurationType" factoryName="Python">
       <module name="PROJECT" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -214,7 +212,8 @@
       <workItem from="1701256491127" duration="4837000" />
       <workItem from="1701430123426" duration="4340000" />
       <workItem from="1701524990225" duration="996000" />
-      <workItem from="1701688866854" duration="7898000" />
+      <workItem from="1701688866854" duration="16975000" />
+      <workItem from="1706825901272" duration="750000" />
     </task>
     <servers />
   </component>
@@ -270,7 +269,7 @@
     <SUITE FILE_PATH="coverage/nonogram_solver_py$test_solver.coverage" NAME="test_solver Coverage Results" MODIFIED="1701098810163" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/nonogram_solver_py$nonogram_solver.coverage" NAME="nonogram_solver Coverage Results" MODIFIED="1701345630362" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/PROJECT$8_queensBacktracking.coverage" NAME="N-queensBacktracking Coverage Results" MODIFIED="1698481339174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/nonogram_solver_py$Flask__nonogram_solver_py_.coverage" NAME="Flask (nonogram_solver.py) Coverage Results" MODIFIED="1701767909081" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/nonogram_solver_py$Flask__nonogram_solver_py_.coverage" NAME="Flask (nonogram_solver.py) Coverage Results" MODIFIED="1702008352645" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/PROJECT$simple_nonogram.coverage" NAME="simple nonogram Coverage Results" MODIFIED="1698523187407" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/PROJECT$tempVisual.coverage" NAME="tempVisual Coverage Results" MODIFIED="1698509012358" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/simple_nonogram_py$simple_nonogram.coverage" NAME="simple nonogram Coverage Results" MODIFIED="1698588139739" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

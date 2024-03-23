@@ -1,18 +1,42 @@
-import numpy as np
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
 app = Flask(__name__)
 CORS(app)
 
 global GRID
 
 
+def preprocessGrid(grid, row_constraints, col_constraints):
+    R, C = len(grid), len(grid[0])
+
+    for y in range(R):
+        for con in row_constraints[y]:
+            if con > C // 2:
+                start = max(0, C - con)
+                end = min(C, con)
+                for i in range(start, end):
+                    grid[y][i] = 2
+
+    for x in range(C):
+        for con in col_constraints[x]:
+            if con > R // 2:
+                start = max(0, R - con)
+                end = min(R, con)
+                for i in range(start, end):
+                    grid[i][x] = 2
+
+    return grid
+
+
 def solvePuzzle(grid, x, y, R, C, row_con, col_con) -> list[list[int]]:
-    solved, solved_grid = solvePic(grid, 0, 0, R, C, row_con, col_con)
+    pGrid = preprocessGrid(grid, row_con, col_con)
+    solved, solved_grid = solvePic(pGrid, 0, 0, R, C, row_con, col_con)
     print(solved_grid)
     if solved:
+        for i in range(R):
+            for j in range(C):
+                if solved_grid[i][j] == 2:
+                    solved_grid[i][j] = 1
         return solved_grid
     else:
         return []
@@ -27,6 +51,8 @@ def solvePic(grid, x, y, R, C, row_con, col_con):
         nextY = y + 1
     else:
         nextX = x + 1
+    if grid[y][x] == 2 and solvePic(grid, nextX, nextY, R, C, row_con, col_con)[0]:
+        return True, grid
     grid[y][x] = 1
     if is_Safe(grid, x, y, R, C, row_con, col_con) and solvePic(grid, nextX, nextY, R, C, row_con, col_con)[0]:
         return True, grid
@@ -58,7 +84,7 @@ def rowToRestriction(grid, y, C):
     l = 0
     for i in range(C):
         if grid[y][i] != 0:
-            currentRow[l] = currentRow[l] + grid[y][i]
+            currentRow[l] = currentRow[l] + 1
         else:
             currentRow.append(0)
             l += 1
@@ -71,31 +97,12 @@ def colToRestriction(grid, x, R):
     l = 0
     for i in range(R):
         if grid[i][x] != 0:
-            currentCol[l] = currentCol[l] + grid[i][x]
+            currentCol[l] = currentCol[l] + 1
         else:
             currentCol.append(0)
             l += 1
     currentCol = [i for i in currentCol if i != 0]
     return currentCol
-
-
-"""
-row_constraints = [[3],
-                   [1, 1],
-                   [1, 1],
-                   [1],
-                   [5],
-                   [2, 2],
-                   [5],
-                   [5],
-                   [3]]
-col_constraints = [[2, 4],
-                   [1, 5],
-                   [1, 1, 3],
-                   [1, 5],
-                   [7]]
-solution = solvePic(grid, 0, 0)
-"""
 
 
 @app.route("/solve", methods=["POST"])
@@ -114,3 +121,28 @@ def solve_nonogram():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+def main():
+    R = 9
+    C = 5
+    row_constraints = [[3],
+                       [1, 1],
+                       [1, 1],
+                       [1],
+                       [5],
+                       [2, 2],
+                       [5],
+                       [5],
+                       [3]]
+    col_constraints = [[2, 4],
+                       [1, 5],
+                       [1, 1, 3],
+                       [1, 5],
+                       [7]]
+    grid = [[0 for x in range(C)] for y in range(R)]
+    solved_grid = solvePuzzle(grid, 0, 0, R, C, row_constraints, col_constraints)
+    print(solved_grid)
+
+
+main()
