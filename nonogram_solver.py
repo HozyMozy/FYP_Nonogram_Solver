@@ -11,19 +11,42 @@ def preprocessGrid(grid, row_constraints, col_constraints):
 
     for y in range(R):
         for con in row_constraints[y]:
-            if con > C // 2:
+            if con > C // 2 and len(con) == 1:
                 start = max(0, C - con)
                 end = min(C, con)
                 for i in range(start, end):
                     grid[y][i] = 2
+            if len(con) > 1 and (con[0] > C - (sum(con) + len(con) - 1)):
+                for a in range(len(con) - 1):
+                    startList = con[0:a + 1:1]
+                    startSum = sum(startList) + len(startList) - 1
+                    endList = con[-1:(-len(con)) + a - 1:-1]
+                    endSum = sum(endList) + len(endList) - 1
+                    if startSum > C - endSum:
+                        start = C - endSum
+                        end = startSum
+                        for i in range(start, end):
+                            grid[y][i] = 2
 
     for x in range(C):
         for con in col_constraints[x]:
-            if con > R // 2:
+            if con > R // 2 and len(con) == 1:
                 start = max(0, R - con)
                 end = min(R, con)
                 for i in range(start, end):
                     grid[i][x] = 2
+            if len(con) > 1 and (con[0] > R - (sum(con) + len(con) - 1)):
+                for a in range(len(con) - 1):
+                    startList = con[0:a + 1:1]
+                    startSum = sum(startList) + len(startList) - 1
+                    endList = con[-1:(-len(con)) + a - 1:-1]
+                    endSum = sum(endList) + len(endList) - 1
+                    if startSum > R - endSum:
+                        start = R - endSum
+                        end = startSum
+                        for i in range(start, end):
+                            grid[i][x] = 2
+
 
     return grid
 
@@ -123,26 +146,5 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 
-def main():
-    R = 9
-    C = 5
-    row_constraints = [[3],
-                       [1, 1],
-                       [1, 1],
-                       [1],
-                       [5],
-                       [2, 2],
-                       [5],
-                       [5],
-                       [3]]
-    col_constraints = [[2, 4],
-                       [1, 5],
-                       [1, 1, 3],
-                       [1, 5],
-                       [7]]
-    grid = [[0 for x in range(C)] for y in range(R)]
-    solved_grid = solvePuzzle(grid, 0, 0, R, C, row_constraints, col_constraints)
-    print(solved_grid)
 
 
-main()
