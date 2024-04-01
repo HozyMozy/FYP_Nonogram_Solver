@@ -19,6 +19,19 @@ def preprocessGrid(grid, row_constraints: list[list], col_constraints: list[list
                     end = startSum
                     for i in range(start, end):
                         grid[y][i] = 2
+        for i in range(C):
+            if grid[y][i] == 2:
+                if con[0] > i + 1:
+                    end = con[0]
+                    start = i
+                    for x in range(start, end):
+                        grid[y][x] = 2
+                elif con[len(con)-1] > C - i+1:
+                    end = i
+                    start = C - con[len(con)-1]
+                    for x in range(start,end):
+                        grid[y][x] = 2
+
 
     for x in range(C):
         con = col_constraints[x]
@@ -38,6 +51,18 @@ def preprocessGrid(grid, row_constraints: list[list], col_constraints: list[list
                     end = startSum
                     for i in range(start, end):
                         grid[i][x] = 2
+        for i in range(R):
+            if grid[i][x] == 2:
+                if con[0] > i + 1:
+                    end = con[0]
+                    start = i
+                    for y in range(start, end):
+                        grid[y][x] = 2
+                elif con[len(con)-1] > R - i+1:
+                    end = i
+                    start = R - con[len(con)-1]
+                    for y in range(start,end):
+                        grid[y][x] = 2
 
     return grid
 
@@ -57,7 +82,7 @@ def solvePuzzle(grid, x, y, R, C, row_con: list[list], col_con: list[list]) -> l
 
 
 def solvePic(grid, x, y, R, C, row_con, col_con):
-    if y == R and is_Safe:
+    if y == R:
         return True, grid
     nextY = y
     if x == C - 1:

@@ -6,47 +6,71 @@ CORS(app)
 global GRID
 
 
-def preprocessGrid(grid, row_constraints, col_constraints):
+def preprocessGrid(grid, row_constraints: list[list], col_constraints: list[list]):
     R, C = len(grid), len(grid[0])
 
     for y in range(R):
-        for con in row_constraints[y]:
-            if con > C // 2 and len(con) == 1:
-                start = max(0, C - con)
-                end = min(C, con)
-                for i in range(start, end):
-                    grid[y][i] = 2
-            if len(con) > 1 and (con[0] > C - (sum(con) + len(con) - 1)):
-                for a in range(len(con) - 1):
-                    startList = con[0:a + 1:1]
-                    startSum = sum(startList) + len(startList) - 1
-                    endList = con[-1:(-len(con)) + a - 1:-1]
-                    endSum = sum(endList) + len(endList) - 1
-                    if startSum > C - endSum:
-                        start = C - endSum
-                        end = startSum
-                        for i in range(start, end):
-                            grid[y][i] = 2
+        con = row_constraints[y]
+        if con[0] > C // 2 and len(con) == 1:
+            start = max(0, C - con[0])
+            end = min(C, con[0])
+            for i in range(start, end):
+                grid[y][i] = 2
+        if len(con) > 1 and (con[0] > C - (sum(con) + len(con) - 1)):
+            for a in range(len(con) - 1):
+                startList = con[0:a + 1:1]
+                startSum = sum(startList) + len(startList) - 1
+                endList = con[-1:(-len(con)) + a - 1:-1]
+                endSum = sum(endList) + len(endList) - 1
+                if startSum > C - endSum:
+                    start = C - endSum
+                    end = startSum
+                    for i in range(start, end):
+                        grid[y][i] = 2
+        for i in range(C):
+            if grid[y][i] == 2:
+                if con[0] > i + 1:
+                    end = con[0]
+                    start = i
+                    for x in range(start, end):
+                        grid[y][x] = 2
+                elif con[len(con)-1] > C - i+1:
+                    end = i
+                    start = C - con[len(con)-1]
+                    for x in range(start,end):
+                        grid[y][x] = 2
+
 
     for x in range(C):
-        for con in col_constraints[x]:
-            if con > R // 2 and len(con) == 1:
-                start = max(0, R - con)
-                end = min(R, con)
-                for i in range(start, end):
-                    grid[i][x] = 2
-            if len(con) > 1 and (con[0] > R - (sum(con) + len(con) - 1)):
-                for a in range(len(con) - 1):
-                    startList = con[0:a + 1:1]
-                    startSum = sum(startList) + len(startList) - 1
-                    endList = con[-1:(-len(con)) + a - 1:-1]
-                    endSum = sum(endList) + len(endList) - 1
-                    if startSum > R - endSum:
-                        start = R - endSum
-                        end = startSum
-                        for i in range(start, end):
-                            grid[i][x] = 2
-
+        con = col_constraints[x]
+        if con[0] > R // 2 and len(con) == 1:
+            start = max(0, R - con[0])
+            end = min(R, con[0])
+            for i in range(start, end):
+                grid[i][x] = 2
+        if len(con) > 1 and (con[0] > R - (sum(con) + len(con) - 1)):
+            for a in range(len(con) - 1):
+                startList = con[0:a + 1:1]
+                startSum = sum(startList) + len(startList) - 1
+                endList = con[-1:(-len(con)) + a - 1:-1]
+                endSum = sum(endList) + len(endList) - 1
+                if startSum > R - endSum:
+                    start = R - endSum
+                    end = startSum
+                    for i in range(start, end):
+                        grid[i][x] = 2
+        for i in range(R):
+            if grid[i][x] == 2:
+                if con[0] > i + 1:
+                    end = con[0]
+                    start = i
+                    for y in range(start, end):
+                        grid[y][x] = 2
+                elif con[len(con)-1] > R - i+1:
+                    end = i
+                    start = R - con[len(con)-1]
+                    for y in range(start,end):
+                        grid[y][x] = 2
 
     return grid
 
@@ -66,7 +90,7 @@ def solvePuzzle(grid, x, y, R, C, row_con, col_con) -> list[list[int]]:
 
 
 def solvePic(grid, x, y, R, C, row_con, col_con):
-    if y == R and is_Safe:
+    if y == R:
         return True, grid
     nextY = y
     if x == C - 1:
