@@ -90,6 +90,9 @@ def solvePic(grid, x, y, R, C, row_con, col_con):
         nextY = y + 1
     else:
         nextX = x + 1
+    currentRow = rowToRestriction(grid, y, C)
+    if currentRow == row_con[y]:
+        nextY = y + 1
     if grid[y][x] == 2 and solvePic(grid, nextX, nextY, R, C, row_con, col_con)[0]:
         return True, grid
     grid[y][x] = 1
@@ -107,9 +110,10 @@ def is_Safe(grid, x, y, R, C, row_con, col_con):
 
     rowRestrict = row_con[y]
     colRestrict = col_con[x]
-
-    if currentCol > colRestrict:
-        return False
+    if len(currentCol) == len(colRestrict):
+        for i in range(len(currentCol)):
+            if currentCol[i] > colRestrict[i]:
+                return False
     if currentRow > rowRestrict:
         return False
     if x == C - 1 and currentRow != rowRestrict:
@@ -181,10 +185,10 @@ col_constraints = [[3,6],
 
 
 def test_solvePuzzle():
-    R = 10
-    C = 10
-    row_constraints = [[10], [1, 2, 2, 1], [1, 2, 2, 1], [1, 2, 2, 1], [3, 3], [4], [2], [2], [4], [6]]
-    col_constraints = [[4], [1, 1], [5, 1], [6, 2], [1, 5], [1, 5], [6, 2], [5, 1], [1, 1], [4]]
+    R = 9
+    C = 5
+    row_constraints = [[3], [1, 1], [1, 1], [1], [5], [2, 2], [5], [5], [3]]
+    col_constraints = [[2, 4], [1, 5], [1, 1, 3], [1, 5], [7]]
     grid = [[0 for x in range(C)] for y in range(R)]
     solved_grid = solvePuzzle(grid, 0, 0, R, C, row_constraints, col_constraints)
     print(solved_grid)

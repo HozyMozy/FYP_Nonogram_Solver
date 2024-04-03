@@ -75,8 +75,9 @@ def preprocessGrid(grid, row_constraints: list[list], col_constraints: list[list
     return grid
 
 
-def solvePuzzle(grid, x, y, R, C, row_con, col_con) -> list[list[int]]:
+def solvePuzzle(grid, x, y, R, C, row_con: list[list], col_con: list[list]) -> list[list[int]]:
     pGrid = preprocessGrid(grid, row_con, col_con)
+    print(pGrid)
     solved, solved_grid = solvePic(pGrid, 0, 0, R, C, row_con, col_con)
     print(solved_grid)
     if solved:
@@ -115,8 +116,10 @@ def is_Safe(grid, x, y, R, C, row_con, col_con):
 
     rowRestrict = row_con[y]
     colRestrict = col_con[x]
-    if currentCol > colRestrict:
-        return False
+    if len(currentCol) == len(colRestrict):
+        for i in range(len(currentCol)):
+            if currentCol[i] > colRestrict[i]:
+                return False
     if currentRow > rowRestrict:
         return False
     if x == C - 1 and currentRow != rowRestrict:
