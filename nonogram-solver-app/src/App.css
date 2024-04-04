@@ -3,44 +3,72 @@ body {
   text-align: center;
 }
 
-
+.structure-row{
+  display: flex;
+}
 .grid-container {
   display: grid;
   grid-template-columns: repeat(5, 40px);
+  border: 2px solid black;
+
+  margin: auto;
+  max-width: fit-content;
+}
+
+.table-container {
+  display: table;
+  text-align: center;
+  margin: auto;
+
+}
+
+form {
+  text-align: center;
+}
+
+table {
+  text-align: center;
+
+}
+
+.grid-row {
+  display: contents;
+}
+
+.constraint-column {
+  display: grid;
+  grid-template-columns: repeat(1, 40px);
   gap: 2px;
   border: 2px solid black;
   margin: auto;
   max-width: fit-content;
 }
 
-.grid-row {
-  display: contents;
-  border-bottom: 1px solid black;
-}
-
-.constraint-column {
-  display: flex;
-}
-
 .constraint-cell {
-  display: contents;
-  width: 40px;
-  height: 40px;
+  width:40px;
+  height:40px;
+  background-color: #747474;
 }
 
 .grid-cell {
   width: 40px;
   height: 40px;
-  border-right: 1px solid black;
 }
 
-
+.constraints-row {
+  width:40px;
+  height:40px;
+}
 
 .black-cell {
+  width:50px;
+  height:46px;
   background-color: black;
 }
 
 .white-cell {
+  width: 50px;
+  height: 46px;
   background-color: white;
 }
 
