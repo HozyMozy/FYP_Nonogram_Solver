@@ -34,17 +34,18 @@ function App() {
     const [default_grid, setDefaultGrid] = useState({grid: initial_grid})
 
   const handleSolveClick = () => {
-        console.log(gridDetails)
-        axios.post("http://localhost:5000/solve", gridDetails).then((response) => {
-            const solvedGrid = response.data.solved_grid;
-            setSolvedGrid(solvedGrid);
-            setDefaultGrid({grid: solvedGrid})
-            console.log(response.data);
-        })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
-        setSolved({solved:true})
+        if (!(solved.solved))
+            console.log(gridDetails)
+            axios.post("http://localhost:5000/solve", gridDetails).then((response) => {
+                const solvedGrid = response.data.solved_grid;
+                setSolvedGrid(solvedGrid);
+                setDefaultGrid({grid: solvedGrid})
+                console.log(response.data);
+            })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
+            setSolved({solved:true})
     };
 
   function handleSubmit(e) {
@@ -84,6 +85,9 @@ function App() {
     colConstraints.pop();
   }
 
+  const initial_grid = Array.from({length: newRows}, () =>
+        Array.from({length: newCols}, () => 0));
+
 
   setGridDetails({
     R: newRows,
@@ -91,9 +95,38 @@ function App() {
     row: rowConstraints,
     col: colConstraints
   });
-  console.log(rowConstraints);
-  console.log(colConstraints);
+  setDefaultGrid({grid: initial_grid});
+  setSolved({solved: false})
   }
+
+  const removeMistakes = () => {
+      if (!(solved.solved)){
+          axios.post("http://localhost:5000/solve", gridDetails).then((response) => {
+              const solvedGrid = response.data.solved_grid;
+              setSolvedGrid(solvedGrid);
+              console.log(response.data);
+          })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+          setSolved({solved:true})
+      }
+
+      const newGrid = default_grid.grid.map((row, rowIndex) => {
+            return row.map((cell, colIndex) => {
+                if (cell === 1 && solvedGrid[rowIndex][colIndex] !== 1) {
+                    return 0; // Replace 1 with 0 if it's a mistake
+                } else {
+                    return cell; // Keep the cell unchanged
+                }
+                });
+        });
+
+      setDefaultGrid({grid: newGrid});
+
+
+
+    };
 
   function stringToArray(data) {
       return data.split(",").map(item => parseInt(item.trim(), 10));
@@ -187,6 +220,7 @@ function App() {
               <button type="submit">Set Grid Size/Constraints</button>
               <button type="button" onClick={handleSolveClick}>Solve</button>
               <button type="button" onClick={handleResetClick}>Reset</button>
+              <button type="button" onClick={removeMistakes}>Remove Mistakes</button>
               <div>
                   <b>
                   <label>
@@ -203,88 +237,12 @@ function App() {
       )
   }
 
-
-
-    const displaySolvedTable = () => {
-      return (
-          <form method="post" onSubmit={handleSubmit}>
-              <table className="table-container">
-                  <tbody>
-                  <tr className="constraints-row">
-                      <td className="constraint-cell"></td>
-                      <td>
-                          <table>
-                              <tbody>
-                              <tr>
-                                  {col_constraints.col.map((con, colIndex) => (
-                                      <td><input
-                                          className="constraint-cell"
-                                          name={"colcon"+colIndex}
-                                          type="text"
-                                          defaultValue={con.toString()}>
-                                      </input></td>
-                                  ))}
-                              </tr>
-                              </tbody>
-                          </table>
-                      </td>
-                  </tr>
-                  <tr>
-                      <td>
-                          <table className="constraints-row">
-                              <tbody>
-                              {row_constraints.row.map((row, rowIndex) => (
-                                  <tr>
-                                      <td><input
-                                          className="constraint-cell"
-                                          name={"rowcon"+rowIndex}
-                                          type="text"
-                                          defaultValue={row.toString()}
-                                      >
-                                      </input></td>
-                                  </tr>
-                              ))}
-                              </tbody>
-                          </table>
-                      </td>
-                      <td>
-                          <table className="nonogram-cells">
-                              <tbody>
-                              {solvedGrid.map((row, rowIndex) =>(
-                                  <tr>
-                                      {row.map((col, colindex) => (
-                                          <td
-                                              className={col === 1 ? "grid-cell black-cell" : "grid-cell white-cell"}
-                                              onMouseOver={highlightConstraints(colindex, rowIndex)}
-                                          >
-                                          </td>
-                                      ))}
-                                  </tr>
-                              ))}
-                              </tbody>
-                          </table>
-                      </td>
-                  </tr>
-                  </tbody>
-              </table>
-              <button type="submit">Set Grid Size/Constraints</button>
-              <button type="button" onClick={handleSolveClick}>Solve</button>
-              <button type="button" onClick={handleResetClick}>Reset</button>
-          </form>
-      )
-  };
-
-  let defaultOrSolved;
-  if (solved.solved) {
-      defaultOrSolved = displaySolvedTable()
-  } else {
-      defaultOrSolved = displayDefaultTable()
-  }
-
   return (
     <div>
       <h1>Nonogram Solver</h1>
         <div>{displayDefaultTable()}</div>
+        <div>Note: Press set grid size once after changing size, then again after setting constraints.</div>
+        <div>Currently the solver takes over 10 minutes for puzzles over 15x15, depending on how many blank spaces there are.</div>
     </div>
   );
 }
