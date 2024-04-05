@@ -203,7 +203,8 @@ def solve_nonogram():
     grid = [[0 for x in range(C)] for y in range(R)]
     permutations = calc_perms(row_constraints, C)
     valid_combination = find_valid_combination(permutations, R, col_constraints)
-    valid_combination = [list(row) for row in valid_combination]
+    if valid_combination:
+        valid_combination = [list(row) for row in valid_combination]
     print(valid_combination)
     return jsonify({"solved_grid": valid_combination})
 

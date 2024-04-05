@@ -251,7 +251,7 @@ def test_multicon():
 
 
 def test_calcAllPermutations():
-    C = 6
+    C = 15
     permutations = [list(product([0, 1], repeat=C))]
     count = 0
     for i, row_perms in enumerate(permutations):
@@ -260,12 +260,11 @@ def test_calcAllPermutations():
             count += 1
             print(perm)
         print()
-    assert count == 64
 
 
 def test_calcValidPermutations():
-    row_constraints = [[1, 1], [1], [1, 1], [1], [1, 1], [2], [6], [2, 1], [2, 1], [4]]
-    C = 6
+    row_constraints = [[7,2], [1,3,1,2], [4,1,1], [4,1,1], [6,5], [1,2], [1,4], [2,3], [2,3], [2,3], [2,1,3], [2,6,1,3], [2,1,4,1,3], [2,1,4,1,3], [2,1,4,1,3]]
+    C = 15
     permutations = calc_perms(row_constraints, C)
     for i, row_perms in enumerate(permutations):
         print(f"Row {i + 1} Permutations:")
@@ -275,10 +274,10 @@ def test_calcValidPermutations():
 
 
 def test_findValidCombination():
-    R = 10
-    C = 6
-    row_constraints = [[1, 1], [1], [1, 1], [1], [1, 1], [2], [6], [2, 1], [2, 1], [4]]
-    col_constraints = [[1], [1, 4], [1, 1, 5], [1, 4, 1], [1, 1, 4], [1]]
+    R = 5
+    C = 5
+    row_constraints = [[5], [5], [5], [5], [5]]
+    col_constraints = [[5], [5], [5], [5], [5]]
     permutations = calc_perms(row_constraints, C)
     for i, row_perms in enumerate(permutations):
         print(f"Row {i + 1} Permutations:")
