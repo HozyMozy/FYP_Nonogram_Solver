@@ -25,14 +25,15 @@ function App() {
 
 
     const [solvedGrid, setSolvedGrid] = useState([[]]);
-    const [gridDetails, setGridDetails] = useState({R: 9, C: 5, row: default_row, col: default_col}); // Initial grid size
+    const [gridDetails, setGridDetails] = useState({R: 9, C: 5, row: default_row, col: default_col}); // Initial grid, and constraints
     const [row_constraints, setRowConstraints] = useState({row: default_row});
     const [col_constraints, setColConstraints] = useState({col: default_col});
     const [solved, setSolved] = useState({solved: false});
     const initial_grid = Array.from({length: gridDetails.R}, () =>
         Array.from({length: gridDetails.C}, () => 0));
-    const [default_grid, setDefaultGrid] = useState({grid: initial_grid})
+    const [default_grid, setDefaultGrid] = useState({grid: initial_grid});
 
+    // Handles solve by sending axios request to back-end, sets solved to true and grid to solved grid.
   const handleSolveClick = () => {
         if (!(solved.solved))
             console.log(gridDetails)
@@ -48,17 +49,19 @@ function App() {
             setSolved({solved:true})
     };
 
-  function handleSubmit(e) {
-  e.preventDefault();
 
-  const form = e.target;
+  // Submits the constraints and grid size and makes respective changes to variables
+  function handleSubmit(e) {
+  e.preventDefault();  // Prevents default submission
+
+  const form = e.target;  // Gets event target
   const formData = new FormData(form);
-  const formJson = Object.fromEntries(formData.entries());
+  const formJson = Object.fromEntries(formData.entries());  // Gets data from form
 
 
   const { rows, cols, ...constraints } = formJson;
 
-
+  // Sets row and column constraints, and also grid size.
   const rowConstraints = Object.keys(constraints)
     .filter(key => key.startsWith("rowcon"))
     .map(key => stringToArray(formJson[key]));
@@ -70,6 +73,8 @@ function App() {
   const newRows = parseInt(rows);
   const newCols = parseInt(cols);
 
+
+  // Adjusts the length of rowConstraints
   while (rowConstraints.length < newRows) {
     rowConstraints.push([]);
   }
@@ -77,7 +82,7 @@ function App() {
     rowConstraints.pop();
   }
 
-  // Adjust the length of colConstraints
+  // Adjusts the length of colConstraints
   while (colConstraints.length < newCols) {
     colConstraints.push([]);
   }
@@ -88,7 +93,7 @@ function App() {
   const initial_grid = Array.from({length: newRows}, () =>
         Array.from({length: newCols}, () => 0));
 
-
+  // Sets grid details with new values, resets default grid, and sets solved to false
   setGridDetails({
     R: newRows,
     C: newCols,
@@ -98,6 +103,8 @@ function App() {
   setDefaultGrid({grid: initial_grid});
   setSolved({solved: false})
   }
+
+  // Removes squares present in default grid but not in solved grid, also sends solve request if not yet solved.
 
   const removeMistakes = () => {
       if (!(solved.solved)){
@@ -127,37 +134,34 @@ function App() {
 
 
     };
-
   function stringToArray(data) {
       return data.split(",").map(item => parseInt(item.trim(), 10));
   }
 
-  function highlightConstraints(colindex, rowIndex) {
-        return undefined;
-    }
-
-    const handleCellChange = (rowIndex, colIndex) => {
+  // Toggles cell using indices passed to function
+  const handleCellChange = (rowIndex, colIndex) => {
       const updatedGrid = default_grid.grid.map((row, i) => {
-        if (i === rowIndex) {
-          return row.map((col, j) => {
-            if (j === colIndex) {
-              // Toggle the value of the cell (0 to 1 or 1 to 0)
-              return col === 1 ? 0 : 1;
-            }
-            return col;
-          });
-        }
-        return row;
+          if (i === rowIndex) {
+              return row.map((col, j) => {
+                  if (j === colIndex) {
+                      // Toggle the value of the cell (0 to 1 or 1 to 0)
+                      // return col === 1 ? 0 : 1;
+                  }
+                  return col;
+              });
+          }
+          return row;
       });
       setDefaultGrid({grid: updatedGrid});
-};
+  };
 
+  // Resets the grid to an empty grid
   const handleResetClick = () => {
       setDefaultGrid({grid: initial_grid})
       setSolved({solved: false})
   }
-
-    const displayDefaultTable = () => {
+  // Wrapper for the display
+  const displayDefaultTable = () => {
       return (
           <form className="table-container" method="post" onSubmit={handleSubmit}>
               <table className="table-container">
@@ -236,7 +240,7 @@ function App() {
           </form>
       )
   }
-
+  // Returns output
   return (
     <div>
       <h1>Nonogram Solver</h1>
