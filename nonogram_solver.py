@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from itertools import product
 app = Flask(__name__)
 CORS(app)
 
@@ -27,19 +28,6 @@ def preprocessGrid(grid, row_constraints: list[list], col_constraints: list[list
                     end = startSum
                     for i in range(start, end):
                         grid[y][i] = 2
-        for i in range(C):
-            if grid[y][i] == 2:
-                if con[0] > i + 1:
-                    end = con[0]
-                    start = i
-                    for x in range(start, end):
-                        grid[y][x] = 2
-                elif con[len(con)-1] > C - i+1:
-                    end = i
-                    start = C - con[len(con)-1]
-                    for x in range(start,end):
-                        grid[y][x] = 2
-
 
     for x in range(C):
         con = col_constraints[x]
@@ -59,18 +47,6 @@ def preprocessGrid(grid, row_constraints: list[list], col_constraints: list[list
                     end = startSum
                     for i in range(start, end):
                         grid[i][x] = 2
-        for i in range(R):
-            if grid[i][x] == 2:
-                if con[0] > i + 1:
-                    end = con[0]
-                    start = i
-                    for y in range(start, end):
-                        grid[y][x] = 2
-                elif con[len(con)-1] > R - i+1:
-                    end = i
-                    start = R - con[len(con)-1]
-                    for y in range(start,end):
-                        grid[y][x] = 2
 
     return grid
 
@@ -155,6 +131,68 @@ def colToRestriction(grid, x, R):
     return currentCol
 
 
+def calc_perms(rowConstraints, C):
+    # Generate all possible permutations for each row constraint
+    permutations = [list(product([0, 1], repeat=C)) for _ in rowConstraints]
+
+    # Filter permutations that satisfy the row constraints
+    valid_permutations = []
+    for row_constraint, row_permutations in zip(rowConstraints, permutations):
+        valid_permutations.append([perm for perm in row_permutations if permIsSafe(perm, row_constraint)])
+
+    return valid_permutations
+
+
+def permToRestriction(row):
+    currentRow = [0]
+    l = 0
+    for i in range(len(row)):
+        if row[i] != 0:
+            currentRow[l] += 1
+        else:
+            currentRow.append(0)
+            l += 1
+    currentRow = [i for i in currentRow if i != 0]
+    return currentRow
+
+
+def permIsSafe(perm, constraint):
+    permRestrict = permToRestriction(perm)
+    if permRestrict == constraint:
+        return True
+    return False
+
+def combinationIsSafe(col, col_constraint, currentR, R):
+    colRestrict = permToRestriction(col)
+    if colRestrict == col_constraint:
+        return True
+    if colRestrict < col_constraint and currentR < R:
+        return True
+    return False
+
+
+def find_valid_combination(permutations, R, col_constraints):
+
+    def is_valid_combination(combination):
+        for col_idx in range(len(combination[0])):
+            col = [row[col_idx] for row in combination]
+            if not combinationIsSafe(col, col_constraints[col_idx], len(combination), R):
+                return False
+        return True
+
+    def backtrack(combination, row_idx):
+        if row_idx == R:
+            return combination
+        for perm in permutations[row_idx]:
+            if is_valid_combination(combination + [perm]):
+                result = backtrack(combination + [perm], row_idx + 1)
+                if result:
+                    return result
+        return None
+
+    return backtrack([], 0)
+
+
 @app.route("/solve", methods=["POST"])
 def solve_nonogram():
     data = request.get_json()
@@ -163,10 +201,11 @@ def solve_nonogram():
     row_constraints = data.get("row")
     col_constraints = data.get("col")
     grid = [[0 for x in range(C)] for y in range(R)]
-
-    solved_grid = solvePuzzle(grid, 0, 0, R, C, row_constraints, col_constraints)
-    print(solved_grid)
-    return jsonify({"solved_grid": solved_grid})
+    permutations = calc_perms(row_constraints, C)
+    valid_combination = find_valid_combination(permutations, R, col_constraints)
+    valid_combination = [list(row) for row in valid_combination]
+    print(valid_combination)
+    return jsonify({"solved_grid": valid_combination})
 
 
 if __name__ == "__main__":
