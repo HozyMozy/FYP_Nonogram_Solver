@@ -1,3 +1,6 @@
+from itertools import product
+
+
 def preprocessGrid(grid, row_constraints: list[list], col_constraints: list[list]):
     R, C = len(grid), len(grid[0])
 
@@ -19,19 +22,6 @@ def preprocessGrid(grid, row_constraints: list[list], col_constraints: list[list
                     end = startSum
                     for i in range(start, end):
                         grid[y][i] = 2
-        for i in range(C):
-            if grid[y][i] == 2:
-                if con[0] > i + 1:
-                    end = con[0]
-                    start = i
-                    for x in range(start, end):
-                        grid[y][x] = 2
-                elif con[len(con)-1] > C - i+1:
-                    end = i
-                    start = C - con[len(con)-1]
-                    for x in range(start,end):
-                        grid[y][x] = 2
-
 
     for x in range(C):
         con = col_constraints[x]
@@ -51,24 +41,12 @@ def preprocessGrid(grid, row_constraints: list[list], col_constraints: list[list
                     end = startSum
                     for i in range(start, end):
                         grid[i][x] = 2
-        for i in range(R):
-            if grid[i][x] == 2:
-                if con[0] > i + 1:
-                    end = con[0]
-                    start = i
-                    for y in range(start, end):
-                        grid[y][x] = 2
-                elif con[len(con)-1] > R - i+1:
-                    end = i
-                    start = R - con[len(con)-1]
-                    for y in range(start,end):
-                        grid[y][x] = 2
-
     return grid
 
 
 def solvePuzzle(grid, x, y, R, C, row_con: list[list], col_con: list[list]) -> list[list[int]]:
     pGrid = preprocessGrid(grid, row_con, col_con)
+    print(pGrid)
     solved, solved_grid = solvePic(pGrid, 0, 0, R, C, row_con, col_con)
     print(solved_grid)
     if solved:
@@ -90,9 +68,6 @@ def solvePic(grid, x, y, R, C, row_con, col_con):
         nextY = y + 1
     else:
         nextX = x + 1
-    currentRow = rowToRestriction(grid, y, C)
-    if currentRow == row_con[y]:
-        nextY = y + 1
     if grid[y][x] == 2 and solvePic(grid, nextX, nextY, R, C, row_con, col_con)[0]:
         return True, grid
     grid[y][x] = 1
@@ -149,6 +124,68 @@ def colToRestriction(grid, x, R):
     return currentCol
 
 
+def calc_perms(rowConstraints, C):
+    # Generate all possible permutations for each row constraint
+    permutations = [list(product([0, 1], repeat=C)) for _ in rowConstraints]
+
+    # Filter permutations that satisfy the row constraints
+    valid_permutations = []
+    for row_constraint, row_permutations in zip(rowConstraints, permutations):
+        valid_permutations.append([perm for perm in row_permutations if permIsSafe(perm, row_constraint)])
+
+    return valid_permutations
+
+
+def permToRestriction(row):
+    currentRow = [0]
+    l = 0
+    for i in range(len(row)):
+        if row[i] != 0:
+            currentRow[l] += 1
+        else:
+            currentRow.append(0)
+            l += 1
+    currentRow = [i for i in currentRow if i != 0]
+    return currentRow
+
+
+def permIsSafe(perm, constraint):
+    permRestrict = permToRestriction(perm)
+    if permRestrict == constraint:
+        return True
+    return False
+
+def combinationIsSafe(col, col_constraint, currentR, R):
+    colRestrict = permToRestriction(col)
+    if colRestrict == col_constraint:
+        return True
+    if colRestrict < col_constraint and currentR < R:
+        return True
+    return False
+
+
+def find_valid_combination(permutations, R, col_constraints):
+
+    def is_valid_combination(combination):
+        for col_idx in range(len(combination[0])):
+            col = [row[col_idx] for row in combination]
+            if not combinationIsSafe(col, col_constraints[col_idx], len(combination), R):
+                return False
+        return True
+
+    def backtrack(combination, row_idx):
+        if row_idx == R:
+            return combination
+        for perm in permutations[row_idx]:
+            if is_valid_combination(combination + [perm]):
+                result = backtrack(combination + [perm], row_idx + 1)
+                if result:
+                    return result
+        return None
+
+    return backtrack([], 0)
+
+
 """
 row_constraints = [[3,6],
                    [2,3,3],
@@ -185,10 +222,10 @@ col_constraints = [[3,6],
 
 
 def test_solvePuzzle():
-    R = 9
-    C = 5
-    row_constraints = [[3], [1, 1], [1, 1], [1], [5], [2, 2], [5], [5], [3]]
-    col_constraints = [[2, 4], [1, 5], [1, 1, 3], [1, 5], [7]]
+    R = 10
+    C = 6
+    row_constraints = [[1, 1], [1], [1, 1], [1], [1, 1], [2], [6], [2, 1], [2, 1], [4]]
+    col_constraints = [[1], [1, 4], [1, 1, 5], [1, 4, 1], [1, 1, 4], [1]]
     grid = [[0 for x in range(C)] for y in range(R)]
     solved_grid = solvePuzzle(grid, 0, 0, R, C, row_constraints, col_constraints)
     print(solved_grid)
@@ -211,3 +248,45 @@ def test_multicon():
                     tempRow[i] = 2
 
     assert tempRow == [0, 0, 2, 0, 0, 0, 0, 0, 0, 0]
+
+
+def test_calcAllPermutations():
+    C = 6
+    permutations = [list(product([0, 1], repeat=C))]
+    count = 0
+    for i, row_perms in enumerate(permutations):
+        print(f"Row {i + 1} Permutations:")
+        for perm in row_perms:
+            count += 1
+            print(perm)
+        print()
+    assert count == 64
+
+
+def test_calcValidPermutations():
+    row_constraints = [[1, 1], [1], [1, 1], [1], [1, 1], [2], [6], [2, 1], [2, 1], [4]]
+    C = 6
+    permutations = calc_perms(row_constraints, C)
+    for i, row_perms in enumerate(permutations):
+        print(f"Row {i + 1} Permutations:")
+        for perm in row_perms:
+            print(perm)
+        print()
+
+
+def test_findValidCombination():
+    R = 10
+    C = 6
+    row_constraints = [[1, 1], [1], [1, 1], [1], [1, 1], [2], [6], [2, 1], [2, 1], [4]]
+    col_constraints = [[1], [1, 4], [1, 1, 5], [1, 4, 1], [1, 1, 4], [1]]
+    permutations = calc_perms(row_constraints, C)
+    for i, row_perms in enumerate(permutations):
+        print(f"Row {i + 1} Permutations:")
+        for perm in row_perms:
+            print(perm)
+        print()
+    valid_combination = find_valid_combination(permutations, R, col_constraints)
+    valid_combination = [list(row) for row in valid_combination]
+    print("Valid combination:")
+    for row in valid_combination:
+        print(row)
