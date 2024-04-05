@@ -34,44 +34,65 @@ function App() {
     const [default_grid, setDefaultGrid] = useState({grid: initial_grid})
 
   const handleSolveClick = () => {
-    axios.post("http://localhost:5000/solve", gridDetails)
-      .then((response) => {
-        const solvedGrid = response.data.solved_grid;
-        setSolvedGrid(solvedGrid);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-    setSolved({solved:true})
-  };
-/*
-  const handleSubmit = (event) => {
-      event.preventDefault();
-      const updatedColConstraints = col_constraints.col.map((con, colIndex) => {
-        const inputElement = document.getElementById("colcon" + colIndex);
-        console.log(inputElement)
-        const inputValue = inputElement ? inputElement.value : "";
-        return stringToArray(inputValue);
-      });
-      const updatedRowConstraints = row_constraints.row.map((row, rowIndex) => {
-          const inputElement = document.getElementById("rowcon"+rowIndex);
-          const inputValue = inputElement ? inputElement.value : "";
-          return stringToArray(inputValue);
-      })
-      setColConstraints({ col: updatedColConstraints });
-      setRowConstraints({row: updatedRowConstraints});
-      console.log(col_constraints)
-  };
-*/
-  function handleSubmit(e){
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-      const formJson = Object.fromEntries(formData.entries());
-      console.log(form)
-      console.log(formData)
-      console.log(formJson)
+        console.log(gridDetails)
+        axios.post("http://localhost:5000/solve", gridDetails).then((response) => {
+            const solvedGrid = response.data.solved_grid;
+            setSolvedGrid(solvedGrid);
+            setDefaultGrid({grid: solvedGrid})
+            console.log(response.data);
+        })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+        setSolved({solved:true})
+    };
+
+  function handleSubmit(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+  const formJson = Object.fromEntries(formData.entries());
+
+
+  const { rows, cols, ...constraints } = formJson;
+
+
+  const rowConstraints = Object.keys(constraints)
+    .filter(key => key.startsWith("rowcon"))
+    .map(key => stringToArray(formJson[key]));
+
+  const colConstraints = Object.keys(constraints)
+    .filter(key => key.startsWith("colcon"))
+    .map(key => stringToArray(formJson[key]));
+
+  const newRows = parseInt(rows);
+  const newCols = parseInt(cols);
+
+  while (rowConstraints.length < newRows) {
+    rowConstraints.push([]);
+  }
+  while (rowConstraints.length > newRows) {
+    rowConstraints.pop();
+  }
+
+  // Adjust the length of colConstraints
+  while (colConstraints.length < newCols) {
+    colConstraints.push([]);
+  }
+  while (colConstraints.length > newCols) {
+    colConstraints.pop();
+  }
+
+
+  setGridDetails({
+    R: newRows,
+    C: newCols,
+    row: rowConstraints,
+    col: colConstraints
+  });
+  console.log(rowConstraints);
+  console.log(colConstraints);
   }
 
   function stringToArray(data) {
@@ -114,7 +135,7 @@ function App() {
                           <table>
                               <tbody>
                               <tr>
-                                  {col_constraints.col.map((con, colIndex) => (
+                                  {gridDetails.col.map((con, colIndex) => (
                                       <td><input
                                           className="constraint-cell"
                                           name={"colcon"+colIndex}
@@ -130,7 +151,7 @@ function App() {
                       <td>
                           <table className="constraints-row">
                               <tbody>
-                              {row_constraints.row.map((row, rowIndex) => (
+                              {gridDetails.row.map((row, rowIndex) => (
                                   <tr>
                                       <td><input
                                           className="constraint-cell"
@@ -163,9 +184,21 @@ function App() {
                   </tr>
                   </tbody>
               </table>
-              <button type="submit">Change Constraints</button>
+              <button type="submit">Set Grid Size/Constraints</button>
               <button type="button" onClick={handleSolveClick}>Solve</button>
               <button type="button" onClick={handleResetClick}>Reset</button>
+              <div>
+                  <b>
+                  <label>
+                      Rows:
+                      <input type="text" name="rows" defaultValue={gridDetails.R.toString()}></input>
+                  </label>
+                  <label>
+                      Columns:
+                      <input type="text" name="cols" defaultValue={gridDetails.C.toString()}></input>
+                  </label>
+                  </b>
+              </div>
           </form>
       )
   }
@@ -234,7 +267,7 @@ function App() {
                   </tr>
                   </tbody>
               </table>
-              <button type="submit">Change Constraints</button>
+              <button type="submit">Set Grid Size/Constraints</button>
               <button type="button" onClick={handleSolveClick}>Solve</button>
               <button type="button" onClick={handleResetClick}>Reset</button>
           </form>
@@ -251,7 +284,7 @@ function App() {
   return (
     <div>
       <h1>Nonogram Solver</h1>
-        <div>{defaultOrSolved}</div>
+        <div>{displayDefaultTable()}</div>
     </div>
   );
 }
