@@ -4,30 +4,20 @@ import "./App.css";
 
 
 function App() {
-    const default_row = [
-        [3],
-        [1, 1],
-        [1, 1],
-        [1],
-        [5],
-        [2, 2],
-        [5],
-        [5],
-        [3]
-    ];
-    const default_col = [
-        [2, 4],
-        [1, 5],
-        [1, 1, 3],
-        [1, 5],
-        [7]
-    ];
+    const default_row = [[3], [1, 1], [1, 1], [1], [5], [2, 2], [5], [5], [3]];
+    const default_col = [[2, 4], [1, 5], [1, 1, 3], [1, 5], [7]];
 
+    const trophy_row = [[10], [1,2,2,1], [1,2,2,1], [1,2,2,1], [3,3], [4], [2], [2], [4], [6]];
+    const trophy_col = [[4], [1,1], [5,1], [6,2], [1,5], [1,5], [6,2], [5,1], [1,1], [4]];
+
+    const iron_row = [[4], [1], [5], [1,1], [7]];
+    const iron_col = [[1], [2], [1,1], [1,1,1], [1,1,1], [1,1,1], [5]];
+
+    const insect_row = [[2,2], [3,1,4], [1,1,4], [6], [7], [6], [5,1], [4,1,1,1], [1,1,1], [1,1,1]]
+    const insect_col = [[1,1,1], [1,1,1], [2,1,4], [1,5], [7], [7], [6], [4,1,3], [4,1], [2,2]]
 
     const [solvedGrid, setSolvedGrid] = useState([[]]);
     const [gridDetails, setGridDetails] = useState({R: 9, C: 5, row: default_row, col: default_col}); // Initial grid, and constraints
-    const [row_constraints, setRowConstraints] = useState({row: default_row});
-    const [col_constraints, setColConstraints] = useState({col: default_col});
     const [solved, setSolved] = useState({solved: false});
     const initial_grid = Array.from({length: gridDetails.R}, () =>
         Array.from({length: gridDetails.C}, () => 0));
@@ -36,17 +26,20 @@ function App() {
     // Handles solve by sending axios request to back-end, sets solved to true and grid to solved grid.
   const handleSolveClick = () => {
         if (!(solved.solved))
-            console.log(gridDetails)
+            console.log(gridDetails);
             axios.post("http://localhost:5000/solve", gridDetails).then((response) => {
                 const solvedGrid = response.data.solved_grid;
-                setSolvedGrid(solvedGrid);
-                setDefaultGrid({grid: solvedGrid})
-                console.log(response.data);
+                if (!(solvedGrid === null)) {
+                    setSolvedGrid(solvedGrid);
+                    setDefaultGrid({grid: solvedGrid});
+                    console.log(response.data);
+                    setSolved({solved:true});
+                }
             })
                 .catch((error) => {
                     console.error("Error:", error);
                 });
-            setSolved({solved:true})
+
     };
 
 
@@ -240,13 +233,83 @@ function App() {
           </form>
       )
   }
-  // Returns output
+
+    function loadPuzzle(e) {
+        e.preventDefault();  // Prevents default behavior of select element
+        const selectedValue = e.target.value.toString();  // Gets the selected value
+        console.log(selectedValue);
+        if (selectedValue === "lock") {
+            const newRows = default_row.length
+            const newCols = default_col.length
+            setGridDetails({
+                R: newRows,
+                C: newCols,
+                row: default_row,
+                col: default_col
+            });
+            const initial_grid = Array.from({length: newRows}, () =>
+                Array.from({length: newCols}, () => 0));
+            setDefaultGrid({grid: initial_grid});
+            setSolved({solved: false})
+        } else if (selectedValue === "iron") {
+            const newRows = iron_row.length
+            const newCols = iron_col.length
+            setGridDetails({
+                R: newRows,
+                C: newCols,
+                row: iron_row,
+                col: iron_col
+            });
+            const initial_grid = Array.from({length: newRows}, () =>
+                Array.from({length: newCols}, () => 0));
+            setDefaultGrid({grid: initial_grid});
+            setSolved({solved: false})
+        } else if (selectedValue === "trophy") {
+            const newRows = trophy_row.length
+            const newCols = trophy_col.length
+            setGridDetails({
+                R: newRows,
+                C: newCols,
+                row: trophy_row,
+                col: trophy_col
+            });
+            const initial_grid = Array.from({length: newRows}, () =>
+                Array.from({length: newCols}, () => 0));
+            setDefaultGrid({grid: initial_grid});
+            setSolved({solved: false})
+        } else if (selectedValue === "insect") {
+            const newRows = insect_row.length
+            const newCols = insect_col.length
+            setGridDetails({
+                R: newRows,
+                C: newCols,
+                row: insect_row,
+                col: insect_col
+            });
+            const initial_grid = Array.from({length: newRows}, () =>
+                Array.from({length: newCols}, () => 0));
+            setDefaultGrid({grid: initial_grid});
+            setSolved({solved: false})
+        }
+    }
+
+    // Returns output
   return (
     <div>
       <h1>Nonogram Solver</h1>
         <div>{displayDefaultTable()}</div>
+        <div>
+            <label>Load Puzzle:
+                <select defaultValue="lock" onChange={loadPuzzle}>
+                    <option value="lock"> Lock </option>
+                    <option value="iron"> Iron </option>
+                    <option value="trophy"> Trophy </option>
+                    <option value="insect"> Insect </option>
+                </select>
+            </label>
+        </div>
         <div>Note: Press set grid size once after changing size, then again after setting constraints.</div>
-        <div>Currently the solver takes over 10 minutes for puzzles over 15x15, depending on how many blank spaces there are.</div>
+        <div>Currently the solver takes over 10 minutes for puzzles over 15x10, depending on how many blank spaces there are.</div>
     </div>
   );
 }

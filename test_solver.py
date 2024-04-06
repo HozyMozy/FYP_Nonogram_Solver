@@ -191,16 +191,58 @@ def find_valid_combination(permutations, R, col_constraints):
     return backtrack([], 0)  # Start recursion
 
 
-# Test initial solve puzzle
+def test_rowToRestriction():
+    currentRow = [0]
+    C = 10
+    tempRow = [1, 1, 1, 0, 1, 1, 1, 1, 0, 0]
+    l = 0
+    for i in range(C):
+        if tempRow[i] != 0:
+            currentRow[l] = currentRow[l] + 1
+        else:
+            currentRow.append(0)
+            l += 1
+    currentRow = [i for i in currentRow if i != 0]
+    assert currentRow == [3,4]
 
+
+
+def test_is_Safe():
+    #  Convert to restrictions
+    currentRow = [3,3]
+    currentCol = [2]
+
+    rowRestrict = [3,4]
+    colRestrict = [3]
+    if len(currentCol) == len(colRestrict):  # If constraints are same size compare element wise.
+        for i in range(len(currentCol)):
+            if currentCol[i] > colRestrict[i]:
+                assert False
+    if currentRow > rowRestrict:
+        assert False
+    return True
+
+# Test initial solve puzzle
 def test_solvePuzzle():
     R = 10
-    C = 6
-    row_constraints = [[1, 1], [1], [1, 1], [1], [1, 1], [2], [6], [2, 1], [2, 1], [4]]
-    col_constraints = [[1], [1, 4], [1, 1, 5], [1, 4, 1], [1, 1, 4], [1]]
+    C = 10
+    row_constraints = [[2, 2], [3, 1, 4], [1, 1, 4], [6], [7], [6], [5, 1], [4, 1, 1, 1], [1, 1, 1], [1, 1, 1]]
+    col_constraints = [[1, 1, 1], [1, 1, 1], [2, 1, 4], [1, 5], [7], [7], [6], [4, 1, 3], [4, 1], [2, 2]]
     grid = [[0 for x in range(C)] for y in range(R)]
     solved_grid = solvePuzzle(grid, 0, 0, R, C, row_constraints, col_constraints)
     print(solved_grid)
+
+
+def test_singlecon():
+    con = [6]
+    C = 10
+    tempRow = [0 for a in range(C)]
+    if con[0] > C // 2 and len(con) == 1:  # If a single constraint is greater than half the length
+        start = max(0, C - con[0])
+        end = min(C, con[0])
+        for i in range(start, end):  # Mark confirmed cells
+            tempRow[i] = 2
+    assert tempRow == [0, 0, 0, 0, 2, 2, 0, 0, 0, 0]
 
 
 # Test multi-constraint preprocess
@@ -251,10 +293,10 @@ def test_calcValidPermutations():
 
 # Test to find a valid combination of rows to complete grid
 def test_findValidCombination():
-    R = 5
-    C = 5
-    row_constraints = [[5], [5], [5], [5], [5]]
-    col_constraints = [[5], [5], [5], [5], [5]]
+    R = 10
+    C = 10
+    row_constraints = [[2, 2], [3, 1, 4], [1, 1, 4], [6], [7], [6], [5, 1], [4, 1, 1, 1], [1, 1, 1], [1, 1, 1]]
+    col_constraints = [[1, 1, 1], [1, 1, 1], [2, 1, 4], [1, 5], [7], [7], [6], [4, 1, 3], [4, 1], [2, 2]]
     permutations = calc_perms(row_constraints, C)
     for i, row_perms in enumerate(permutations):
         print(f"Row {i + 1} Permutations:")
@@ -266,3 +308,4 @@ def test_findValidCombination():
     print("Valid combination:")
     for row in valid_combination:
         print(row)
+
