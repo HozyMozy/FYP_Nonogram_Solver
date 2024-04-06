@@ -133,12 +133,13 @@ function App() {
 
   // Toggles cell using indices passed to function
   const handleCellChange = (rowIndex, colIndex) => {
+      console.log("cell clicked")
       const updatedGrid = default_grid.grid.map((row, i) => {
           if (i === rowIndex) {
               return row.map((col, j) => {
                   if (j === colIndex) {
                       // Toggle the value of the cell (0 to 1 or 1 to 0)
-                      // return col === 1 ? 0 : 1;
+                      return col === 1 ? 0 : 1;
                   }
                   return col;
               });
